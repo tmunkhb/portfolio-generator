@@ -1,15 +1,7 @@
+const fs = require('fs');
 const inquirer = require('inquirer');
-// const fs = require('fs');
-// const generatePage = require('./src/page-templatec');
-// const pageTML = generatePage(name, github);
+const generatePage = require('./src/page-template');
 
-
-// fs.writeFile('./index.html', generatePage(name, github), err => {
-//     if (err) throw new Error(err);
-
-//     console.log('Portfolio complete! Checkout index.html to see the output!');
-
-// });
 
 const promptUser = () => {
     return inquirer.prompt([
@@ -30,12 +22,12 @@ const promptUser = () => {
         {
             type: 'input',
             name: 'github',
-            message: 'Enter your GitHub username?',
+            message: 'Enter your GitHub username (Required)',
             validate: githubInput => {
                 if (githubInput) {
                   return true;
                 } else {
-                  console.log('Please enter your GitHub username! (Required)');
+                  console.log('Please enter your GitHub username!');
                   return false;
                 }
             }
@@ -158,5 +150,11 @@ const promptProject = portfolioData => {
 promptUser()
 .then(promptProject)
 .then(portfolioData => {
-    console.log(portfolioData);
+    const pageHTML = generatePage(portfolioData);
+
+    fs.writeFile('./index.html', pageHTML, err => {
+        if (err) throw new Error(err);
+    
+        console.log('Page created! Checkout index.html in this directory to see it!');
+    });
 });
